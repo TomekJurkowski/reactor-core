@@ -201,4 +201,6 @@ public class FluxWindowTimeOrSizeTest {
 		            .assertNext(l -> assertThat(l).containsExactly(1, 2))
 		            .verifyError(RejectedExecutionException.class);
 	}
+
+	//TODO test the subscriber's scan
 }

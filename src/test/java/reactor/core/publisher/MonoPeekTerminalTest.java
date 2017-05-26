@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,35 +20,26 @@ import org.junit.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import reactor.core.Scannable;
-import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MonoIgnoreEmptyTest {
-
-	@Test
-	public void normal() {
-		StepVerifier.create(Flux.just(1)
-		                        .thenEmpty(Flux.empty()))
-		            .expectComplete();
-	}
-
-	@Test
-	public void normal3() {
-		StepVerifier.create(Flux.just(1)
-		                        .then())
-		            .expectComplete();
-	}
+public class MonoPeekTerminalTest {
 
 	@Test
 	public void scanSubscriber() {
 		Subscriber<String> actual = new LambdaMonoSubscriber<>(null, e -> {}, null, null);
-		MonoIgnoreEmpty.IgnoreElementsSubscriber<String> test = new MonoIgnoreEmpty.IgnoreElementsSubscriber<>(actual);
+		MonoPeekTerminal<String> main = new MonoPeekTerminal<>(Mono.just("foo"), null, null, null);
+		MonoPeekTerminal.MonoTerminalPeekSubscriber<String> test = new MonoPeekTerminal.MonoTerminalPeekSubscriber<>(
+				actual, main);
 		Subscription sub = Operators.emptySubscription();
 		test.onSubscribe(sub);
 
 		assertThat(test.scan(Scannable.ScannableAttr.PARENT)).isSameAs(sub);
 		assertThat(test.scan(Scannable.ScannableAttr.ACTUAL)).isSameAs(actual);
+
+		assertThat(test.scan(Scannable.BooleanAttr.TERMINATED)).isFalse();
+		test.onError(new IllegalStateException("boom"));
+		assertThat(test.scan(Scannable.BooleanAttr.TERMINATED)).isTrue();
 	}
 
 }

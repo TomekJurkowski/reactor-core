@@ -389,7 +389,8 @@ public class FluxOnBackpressureBufferStrategyTest implements Consumer<String>,
         test.requested = 35;
         assertThat(test.scan(Scannable.LongAttr.REQUESTED_FROM_DOWNSTREAM)).isEqualTo(35);
         assertThat(test.scan(Scannable.IntAttr.PREFETCH)).isEqualTo(Integer.MAX_VALUE);
-        assertThat(test.scan(Scannable.IntAttr.BUFFERED)).isEqualTo(0); // RS: TODO non-zero size
+        test.offer(9);
+        assertThat(test.scan(Scannable.IntAttr.BUFFERED)).isEqualTo(1);
 
         assertThat(test.scan(Scannable.ThrowableAttr.ERROR)).isNull();
         assertThat(test.scan(Scannable.BooleanAttr.TERMINATED)).isFalse();

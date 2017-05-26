@@ -1278,7 +1278,6 @@ public class FluxPublishOnTest extends FluxOperatorTest<String, String> {
         Assertions.assertThat(test.scan(Scannable.BooleanAttr.CANCELLED)).isTrue();
     }
 
-
 	@Test
     public void scanConditionalSubscriber() {
 		Fuseable.ConditionalSubscriber<Integer> actual = Mockito.mock(Fuseable.ConditionalSubscriber.class);

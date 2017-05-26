@@ -42,5 +42,4 @@ public class InnerProducerTest {
 
 		assertThat(test.scan(Scannable.ScannableAttr.ACTUAL)).isSameAs(actual);
 	}
-
 }
